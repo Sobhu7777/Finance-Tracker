@@ -22,5 +22,7 @@ app.use("/api/transactions", protect, transactionRoutes); // Correctly mounted T
 
 // Connect DB & start server
 connectDB()
-  .then(() => app.listen(5000, () => console.log(`Server running on port ${port}`)))
+  .then(() => app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+}))
   .catch(err => console.error(err));
