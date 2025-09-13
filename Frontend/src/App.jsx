@@ -1,22 +1,28 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import AddTransaction from "./pages/AddTransaction";
-import EditTransaction from "./pages/EditTransaction";
-import DeleteTransaction from "./pages/DeleteTransaction";
-import { ThemeProvider } from "./context/ThemeContext";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <ThemeProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/add" element={<AddTransaction />} />
-          <Route path="/:id/edit" element={<EditTransaction />} />
-          <Route path="/:id/delete" element={<DeleteTransaction />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route 
+            path="/" 
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
-      </Router>
-    </ThemeProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

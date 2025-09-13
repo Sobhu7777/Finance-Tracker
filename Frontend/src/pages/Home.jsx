@@ -1,3 +1,4 @@
+// frontend/src/pages/Home.jsx
 import { useEffect, useState } from "react";
 import { getTransactions, addTransaction, updateTransaction, deleteTransaction } from "../services/api";
 import TransactionList from "../components/TransactionList";
@@ -6,15 +7,21 @@ import FilterControls from "../components/FilterControls";
 import Charts from "../components/Charts";
 import Modal from "../components/Modal";
 import TransactionForm from "../components/TransactionForm";
+import { useAuth } from "../context/AuthContext"; // Import useAuth
 
 export default function Home() {
   const [transactions, setTransactions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
+  const { logout } = useAuth(); // Use the logout function
 
   const fetchData = async (filters = {}) => {
-    const res = await getTransactions(filters);
-    setTransactions(res.data);
+    try {
+      const res = await getTransactions(filters);
+      setTransactions(res.data);
+    } catch (err) {
+      console.error("Failed to fetch transactions:", err);
+    }
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -49,14 +56,22 @@ export default function Home() {
     <div className="container mx-auto p-4 md:p-8">
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">My Finances</h1>
-        <button
-          onClick={() => handleOpenModal(
-            <TransactionForm onSubmit={handleSaveTransaction} onCancel={handleCloseModal} />
-          )}
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-colors"
-        >
-          Add Transaction
-        </button>
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => handleOpenModal(
+              <TransactionForm onSubmit={handleSaveTransaction} onCancel={handleCloseModal} />
+            )}
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-colors"
+          >
+            Add Transaction
+          </button>
+          <button
+            onClick={logout} // Add a logout handler
+            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-colors"
+          >
+            Logout
+          </button>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
